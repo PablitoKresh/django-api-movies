@@ -3,7 +3,7 @@ from django.db import models
 #Creacion del modelo Movie con sus atributos correspondientes
 
 class Movie(models.Model):
-    nombre = models.CharField(max_length=100)
+    nombre = models.CharField(max_length=100, unique=True)
     anio = models.PositiveIntegerField()
     duracion = models.PositiveIntegerField()
     genero = models.CharField(max_length=100)
