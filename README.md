@@ -22,7 +22,7 @@ SQLite
 1.Clone the repository:
 
 2.Create and activate a virtual enviroment
-python -m venv venv
+python -m venv 
 venv\Scripts\activate  # Windows
 
 3.Install dependencies 
