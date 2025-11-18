@@ -23,7 +23,9 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-l%^6%xf@uaeaea10^v)v1*n)03$_jut#n-uvx_104d40x5k!1%'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+import os
+DEBUG = os.environ.get("DEBUG", "True") == "True"
+
 
 ALLOWED_HOSTS = [
     '127.0.0.1',
@@ -138,5 +140,7 @@ STATICFILES_DIRS = [
     BASE_DIR / "static",   # Crea esta carpeta aunque esté vacía
 ]
 
-STATICFILES_STORAGE = "whitenoise.storage.CompressedStaticFilesStorage"
+if not DEBUG:
+    STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
+
 
