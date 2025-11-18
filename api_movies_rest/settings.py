@@ -138,4 +138,5 @@ STATICFILES_DIRS = [
     BASE_DIR / "static",   # Crea esta carpeta aunque esté vacía
 ]
 
-STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
+STATICFILES_STORAGE = "whitenoise.storage.CompressedStaticFilesStorage"
+
