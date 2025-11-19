@@ -19,7 +19,7 @@ from django.urls import path, include
 from django.shortcuts import redirect
 
 urlpatterns = [
-    path('', lambda request: redirect('/api/')),
+    path('', include('movies.urls')),
     path('admin/', admin.site.urls),
-    path('api/', include('movies.urls')),
+
 ]
