@@ -30,7 +30,8 @@ DEBUG = os.environ.get("DEBUG", "True") == "True"
 ALLOWED_HOSTS = [
     '127.0.0.1',
     'localhost',
-    'django-api-movies.onrender.com'
+    'django-api-movies.onrender.com',
+    "api.pablobertolet.dev",
 ]
 
 
