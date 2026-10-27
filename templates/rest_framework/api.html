@@ -1,0 +1,263 @@
+{% extends "rest_framework/base.html" %}
+
+{% comment %}
+Vista navegable de la API con la misma identidad que el portfolio
+(pablobertolet.dev): fondo azul tinta, acento ámbar y Bricolage Grotesque.
+Solo cambia el aspecto; la API y el JSON siguen exactamente igual.
+{% endcomment %}
+
+{% block title %}{% if name %}{{ name }} · {% endif %}API de películas · Pablo Jiménez Bertolet{% endblock %}
+
+{% block style %}
+  {{ block.super }}
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,600;12..96,800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --tinta: #0f1a2b;
+      --tinta-2: #16243a;
+      --tinta-3: #1c2d47;
+      --borde: #26364f;
+      --texto: #e8ecf2;
+      --texto-suave: #9ca8ba;
+      --ambar: #f2b544;
+      --ambar-claro: #f7c96d;
+    }
+
+    body {
+      background: var(--tinta);
+      color: var(--texto);
+      font-family: "Bricolage Grotesque", system-ui, sans-serif;
+      font-size: 15px;
+    }
+
+    a { color: var(--ambar); }
+    a:hover, a:focus { color: var(--ambar-claro); }
+    a:focus-visible, .btn:focus-visible {
+      outline: 2px solid var(--ambar);
+      outline-offset: 2px;
+    }
+
+    /* Barra superior */
+    .navbar, .navbar-inverse {
+      background: var(--tinta);
+      border: 0;
+      border-bottom: 1px solid var(--borde);
+      margin-bottom: 0;
+    }
+    .navbar-inverse .navbar-brand,
+    .navbar-inverse .navbar-brand:hover {
+      color: var(--texto);
+      font-weight: 600;
+    }
+    .navbar-inverse .navbar-nav > li > a { color: var(--texto-suave); }
+    .navbar-inverse .navbar-nav > li > a:hover { color: var(--ambar); }
+
+    .wrapper .container,
+    .container { max-width: 980px; }
+
+    /* Migas de pan */
+    .breadcrumb {
+      background: transparent;
+      padding: 18px 0 6px;
+      margin: 0;
+    }
+    .breadcrumb > li + li::before { color: var(--borde); }
+    .breadcrumb > li > a { color: var(--ambar); }
+    .breadcrumb > .active { color: var(--texto-suave); }
+
+    /* Cabecera de cada página */
+    .page-header {
+      border-bottom: 1px solid var(--borde);
+      margin-top: 8px;
+    }
+    .page-header h1 {
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      color: var(--texto);
+    }
+
+    /* Descripción (los textos de ayuda de cada vista) */
+    .description {
+      max-width: 72ch;
+      color: #cfd6e0;
+      line-height: 1.6;
+      margin: 18px 0 22px;
+    }
+    .description p { margin-bottom: 10px; }
+    .description ul { padding-left: 20px; margin-bottom: 10px; }
+    .description code, code {
+      background: var(--tinta-3);
+      color: var(--ambar-claro);
+      border-radius: 4px;
+      padding: 1px 5px;
+    }
+
+    /* Bloque con la petición y la respuesta */
+    .request-info, .response-info {
+      margin-bottom: 18px;
+    }
+    .request-info pre,
+    .response-info pre,
+    pre.prettyprint {
+      background: var(--tinta-2) !important;
+      border: 1px solid var(--borde) !important;
+      border-radius: 8px;
+      color: var(--texto);
+      padding: 14px 16px !important;
+      font-size: 13px;
+    }
+    .response-info pre { max-height: 560px; overflow: auto; }
+    .meta, .meta b { color: var(--texto-suave); }
+
+    /* Colores del JSON */
+    .str, .atv { color: #9fd8a8; }
+    .lit { color: var(--ambar-claro); }
+    .pun, .opn, .clo { color: var(--texto-suave); }
+    .pln, .kwd, .tag, .atn { color: var(--texto); }
+    .typ { color: #9cc7ff; }
+
+    /* Botones */
+    .btn {
+      border-radius: 6px;
+      font-weight: 600;
+      text-shadow: none;
+      box-shadow: none !important;
+    }
+    .btn-primary,
+    .btn-primary:focus {
+      background: var(--ambar);
+      border-color: var(--ambar);
+      color: #1b1405;
+    }
+    .btn-primary:hover,
+    .btn-primary:active {
+      background: var(--ambar-claro) !important;
+      border-color: var(--ambar-claro) !important;
+      color: #1b1405 !important;
+    }
+    .btn-default, .btn-info {
+      background: transparent;
+      border-color: var(--borde);
+      color: var(--texto);
+    }
+    .btn-default:hover, .btn-info:hover,
+    .btn-default:focus, .btn-info:focus,
+    .open > .dropdown-toggle.btn-default {
+      background: rgba(255, 255, 255, 0.05);
+      border-color: var(--texto-suave);
+      color: var(--texto);
+    }
+    .btn-danger {
+      background: transparent;
+      border-color: #a5484a;
+      color: #f0a3a3;
+    }
+    .btn-danger:hover { background: #a5484a; color: #fff; }
+
+    .dropdown-menu {
+      background: var(--tinta-2);
+      border-color: var(--borde);
+    }
+    .dropdown-menu > li > a { color: var(--texto); }
+    .dropdown-menu > li > a:hover { background: var(--tinta-3); color: var(--ambar); }
+
+    /* Formularios para crear / editar */
+    .well, .tabbable .tab-content, .tab-content {
+      background: var(--tinta-2);
+      border: 1px solid var(--borde);
+      border-radius: 8px;
+      box-shadow: none;
+    }
+    .nav-tabs { border-bottom-color: var(--borde); }
+    .nav-tabs > li > a { color: var(--texto-suave); }
+    .nav-tabs > li > a:hover { background: transparent; border-color: transparent; color: var(--ambar); }
+    .nav-tabs > li.active > a,
+    .nav-tabs > li.active > a:hover,
+    .nav-tabs > li.active > a:focus {
+      background: var(--tinta-2);
+      border-color: var(--borde) var(--borde) transparent;
+      color: var(--texto);
+    }
+    .form-control {
+      background: var(--tinta);
+      border-color: var(--borde);
+      color: var(--texto);
+      box-shadow: none;
+    }
+    .form-control:focus {
+      border-color: var(--ambar);
+      box-shadow: 0 0 0 2px rgba(242, 181, 68, 0.25);
+    }
+    label, .control-label { color: #cfd6e0; font-weight: 600; }
+    legend { color: var(--texto); border-bottom-color: var(--borde); }
+    .help-block { color: var(--texto-suave); }
+
+    /* Ventana de filtros (búsqueda y orden) */
+    .modal-content {
+      background: var(--tinta-2);
+      border-color: var(--borde);
+      color: var(--texto);
+    }
+    .modal-header, .modal-footer { border-color: var(--borde); }
+    .close { color: var(--texto); opacity: .7; text-shadow: none; }
+    .list-group-item {
+      background: transparent;
+      border-color: var(--borde);
+      color: var(--texto) !important;
+    }
+    a.list-group-item:hover { background: var(--tinta-3); color: var(--ambar); }
+    .list-group-item.active, .list-group-item.active:hover {
+      background: var(--ambar);
+      border-color: var(--ambar);
+      color: #1b1405;
+    }
+
+    /* Paginación */
+    .pagination > li > a,
+    .pagination > li > span {
+      background: transparent;
+      border-color: var(--borde);
+      color: var(--texto);
+    }
+    .pagination > li > a:hover { background: var(--tinta-3); color: var(--ambar); }
+    .pagination > .active > a,
+    .pagination > .active > a:hover {
+      background: var(--ambar);
+      border-color: var(--ambar);
+      color: #1b1405;
+    }
+    .pagination > .disabled > a,
+    .pagination > .disabled > span {
+      background: transparent;
+      border-color: var(--borde);
+      color: var(--borde);
+    }
+
+    #footer, .footer { display: none; }
+
+    /* Móvil: barra superior en una sola línea */
+    @media (max-width: 767px) {
+      .navbar .container { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+      .navbar .container::before, .navbar .container::after { display: none; }
+      .navbar-brand, .navbar .navbar-nav > li > a { white-space: nowrap; }
+      .navbar-brand { font-size: 15px; }
+      .navbar .navbar-nav > li > a { font-size: 13px; }
+      .navbar-header, .navbar .navbar-nav { float: none; margin: 0; }
+      .navbar .navbar-nav { display: flex; gap: 12px; }
+      .navbar .navbar-nav > li > a { padding: 15px 0; }
+      .navbar-brand { padding-left: 0; }
+      .page-header h1 { font-size: 30px; }
+    }
+  </style>
+{% endblock %}
+
+{% block branding %}
+  <a class="navbar-brand" rel="nofollow" href="/">👾 API de películas</a>
+{% endblock %}
+
+{% block userlinks %}
+  <li><a href="https://pablobertolet.dev" target="_blank" rel="noopener">Portfolio</a></li>
+  <li><a href="https://github.com/PablitoKresh/django-api-movies" target="_blank" rel="noopener">Código en GitHub</a></li>
+{% endblock %}
